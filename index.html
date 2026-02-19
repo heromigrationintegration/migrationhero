@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="page">
+        <div class="page__left"></div>
+        <div class="page__right">
+            <div class="container">
+                <div class="container__frame">
+                    <form class="container__migration" action="">
+                        <header class="header">
+                            <h1 class="header__title">Criar Checklist</h1>
+                            <p class="header__subtitle">Preencha os dados abaixo para criação do checklist de migração.
+                            </p>
+                        </header>
+                        <div class="field">
+                            <div class="field__container">
+                                <label class="field__head" for="nomeCliente">Nome do cliente</label>
+                                <input class="field__input" name="nomeCliente"
+                                    placeholder="Nome do cliente que será migrado">
+                            </div>
+                            <div class="field__container">
+                                <div class="field__head">Importar Conteúdo</div>
+                                <div class="field__toggle">
+                                    <div class="field__dropdown">
+                                        <button type="button" class="field__select">Selecione uma ou mais
+                                            plataformas</button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
+                                            width="20px" fill="#000000">
+                                            <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+                                        </svg>
+                                    </div>
+                                    <ul class="field__list field__list--migration">
+                                        <li class="field__item"><input type="checkbox">Eduzz</li>
+                                        <li class="field__item"><input type="checkbox">Hotmart</li>
+                                        <li class="field__item"><input type="checkbox">Kiwify</li>
+                                        <li class="field__item"><input type="checkbox">Memberkit</li>
+                                        <li class="field__item"><input type="checkbox">Outra</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="field__container">
+                                <div class="field__head">Integrar Sistema</div>
+                                <div class="field__toggle">
+                                    <div class="field__dropdown">
+                                        <button type="button" class="field__select">Selecione um ou mais
+                                            sistemas</button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
+                                            width="20px" fill="#000000">
+                                            <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+                                        </svg>
+                                    </div>
+                                    <ul class="field__list field__list--migration">
+                                        <li class="field__item"><input type="checkbox">Active Campaign</li>
+                                        <li class="field__item"><input type="checkbox">Alpaclass</li>
+                                        <li class="field__item"><input type="checkbox">Astron Members</li>
+                                        <li class="field__item"><input type="checkbox">Botconversa</li>
+                                        <li class="field__item"><input type="checkbox">Cademí</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action">
+                            <button class="action__btn action__btn--next">Criar checklist</button>
+                        </div>
+                        <div class="info">
+                            <p class="info__msg">Checklist criado! Compartilhe o link com o cliente.</p>
+                            <p class="info__link">https://chatgpt.com/c/69974d5d-1d28-8332-a284-ba4ffb10b075
+                                <svg class="info__copy" xmlns="http://www.w3.org/2000/svg" height="18px"
+                                    viewBox="0 -960 960 960" width="18px" fill="#000000">
+                                    <path
+                                        d="M744-192H312q-29 0-50.5-21.5T240-264v-576q0-29 21.5-50.5T312-912h312l192 192v456q0 29-21.5 50.5T744-192ZM576-672v-168H312v576h432v-408H576ZM168-48q-29 0-50.5-21.5T96-120v-552h72v552h456v72H168Zm144-792v195-195 576-576Z" />
+                                </svg>
+                            </p>
+                        </div>
+                    </form>
+                    <form class="container__product" action="">
+                        <header class="header">
+                            <h1 class="header__title">Migrar Produtos</h1>
+                            <p class="header__subtitle">Para migrar aulas e conteúdos libere o acesso de aluno para o
+                                e-mail migrar@herospar.com</p>
+                        </header>
+                        <div class="field">
+                            <div class="field__container">
+                                <label class="field__head" for="productName">Nome do produto</label>
+                                <input class="field__input" name="productName"
+                                    placeholder="Nome exato do produto que será migrado">
+                            </div>
+                            <div class="field__container">
+                                <div class="field__head">Segmento do produto</div>
+                                <div class="field__toggle">
+                                    <div class="field__dropdown">
+                                        <button type="button" class="field__select">Selecione o segmento do
+                                            produto</button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
+                                            width="20px" fill="#000000">
+                                            <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+                                        </svg>
+                                    </div>
+                                    <ul class="field__list">
+                                        <li class="field__item">Educação</li>
+                                        <li class="field__item">Saúde e Esportes</li>
+                                        <li class="field__item">Desenvolvimento Pessoal</li>
+                                        <li class="field__item">Idiomas</li>
+                                        <li class="field__item">Finanças e Investimentos</li>
+                                        <li class="field__item">Tecnologia da Informação</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="offerUnitary">Ofertas Unitárias</label>
+                                <input class="field__input" name="offerUnitary"
+                                    placeholder="Links das ofertas unitárias que serão migradas (Separe por vírgula)">
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="offerRecurrency">Ofertas Recorrências</label>
+                                <input class="field__input" name="offerRecurrency"
+                                    placeholder="Links das ofertas de recorrências que serão migradas (Separe por vírgula)">
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="contentDrive">Conteúdos Drive</label>
+                                <input class="field__input" name="contentDrive"
+                                    placeholder="Links das ofertas de recorrências que serão migradas (Separe por vírgula)">
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="observation">Observações</label>
+                                <input class="field__input" name="observation"
+                                    placeholder="Links das ofertas de recorrências que serão migradas (Separe por vírgula)">
+                            </div>
+                        </div>
+                        <div class="action">
+                            <button class="action__btn action__btn--add">Salvar e inserir outro</button>
+                            <button class="action__btn action__btn--next">Salvar e avançar</button>
+                        </div>
+                    </form>
+                    <form class="container__activecampaign" action="" >
+                        <header class="header">
+                            <h1 class="header__title">Integrar Active Campaign</h1>
+                            <p class="header__subtitle">Essa integração cria um contato ao acionar uma automação na
+                                Herospark. Clique aqui para ver onde encontrar os dados na Active Campaign.</p>
+                        </header>
+                        <div class="field">
+                            <div class="field__container">
+                                <label class="field__head" for="apikeyactive">API Key</label>
+                                <input class="field__input" name="apikeyactive"
+                                    placeholder="Chave API da sua conta Active Campaign">
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="urlactive">URL</label>
+                                <input class="field__input" name="urlactive"
+                                    placeholder="URL da sua conta Active Campaign">
+                            </div>
+                            <div class="field__container">
+                                <div class="field__head">Produto</div>
+                                <div class="field__toggle">
+                                    <div class="field__dropdown">
+                                        <button type="button" class="field__select">Selecione o produto que será
+                                            integrado</button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
+                                            width="20px" fill="#000000">
+                                            <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+                                        </svg>
+                                    </div>
+                                    <ul class="field__list">
+                                        <li class="field__item">Produto XPTO</li>
+                                        <li class="field__item">Produto XPTO A</li>
+                                        <li class="field__item">Produto XPTO B</li>
+                                        <li class="field__item">Produto XPTO C</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="field__container">
+                                <div class="field__head">Automação</div>
+                                <div class="field__toggle">
+                                    <div class="field__dropdown">
+                                        <button type="button" class="field__select">Selecione a automação que cria o
+                                            contato</button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
+                                            width="20px" fill="#000000">
+                                            <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+                                        </svg>
+                                    </div>
+                                    <ul class="field__list">
+                                        <li class="field__item">Educação</li>
+                                        <li class="field__item">Saúde e Esportes</li>
+                                        <li class="field__item">Desenvolvimento Pessoal</li>
+                                        <li class="field__item">Idiomas</li>
+                                        <li class="field__item">Finanças e Investimentos</li>
+                                        <li class="field__item">Tecnologia da Informação</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="idlistaactive">ID Lista</label>
+                                <input class="field__input" name="idlistaactive"
+                                    placeholder="ID da lista que o contato será adicionado">
+                            </div>
+                            <div class="field__container">
+                                <label class="field__head" for="tagactive">Tag</label>
+                                <input class="field__input" name="tagactive"
+                                    placeholder="Tag que será adicionada ao contato">
+                            </div>
+                        </div>
+                        <div class="action">
+                            <button class="action__btn action__btn--add">Salvar e inserir outro</button>
+                            <button class="action__btn action__btn--next">Salvar e avançar</button>
+                        </div>
+                    </form>
+                    <form class="container__botconversa" action="" >
+                        <header class="header">
+                            <h1 class="header__title">Integrar Botconversa</h1>
+                            <p class="header__subtitle">Essa integração cria um contato ao acionar uma automação na
+                                Herospark. Clique aqui para ver onde encontrar os dados no Botconversa.</p>
+                        </header>
+                        <div class="field">
+                            <div class="field__container">
+                                <label class="field__head" for="idcompanhia">ID Companhia</label>
+                                <input class="field__input" name="idcompanhia"
+                                    placeholder="ID companhia da sua conta no Botconversa">
+                            </div>
+                            <div class="field__container">
+                                <div class="field__head">Automação</div>
+                                <div class="field__toggle">
+                                    <div class="field__dropdown">
+                                        <button type="button" class="field__select">Selecione uma ou mais automações que
+                                            criam o contato</button>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960"
+                                            width="20px" fill="#000000">
+                                            <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z" />
+                                        </svg>
+                                    </div>
+                                    <ul class="field__list field__list--migration">
+                                        <li class="field__item"><input type="checkbox">Pagamento confirmado</li>
+                                        <li class="field__item"><input type="checkbox">Pagamento confirmado order bump
+                                        </li>
+                                        <li class="field__item"><input type="checkbox">Pix criado</li>
+                                        <li class="field__item"><input type="checkbox">Boleto Gerado</li>
+                                        <li class="field__item"><input type="checkbox">Estorno feito pelo produtor</li>
+                                        <li class="field__item"><input type="checkbox">Chargeback</li>
+                                        <li class="field__item"><input type="checkbox">Cartão de crédito recusado</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action">
+                            <button class="action__btn action__btn--next">Salvar e avançar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+
+</html>
