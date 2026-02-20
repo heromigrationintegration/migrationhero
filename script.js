@@ -117,7 +117,7 @@ class CustomDropdown {
  **********************/
 const CONFIG = {
   sheetsEndpoint:
-    "https://script.google.com/macros/s/AKfycbwBrSt_6C59FDvFO2kjKXw4OoZ19hlUjJtqCrj6O-L26W530JYvPpaioxq7jc3lTU4o0g/exec",
+    "https://script.google.com/macros/s/AKfycbzcMKYXHK-j-wtORxkMb9-GupRYRIS3knRXupvBYMRfjBa-E24VcRXeGm49a87oGd72UQ/exec",
 };
 
 /**********************
@@ -265,3 +265,4 @@ document.addEventListener("DOMContentLoaded", () => {
   new MigrationController();
   StepRouter.init();
 });
+
