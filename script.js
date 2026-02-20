@@ -117,7 +117,7 @@ class CustomDropdown {
  **********************/
 const CONFIG = {
   sheetsEndpoint:
-    "https://script.google.com/macros/s/AKfycbxbmXO3kwJGEWcflZboBYDP8w6iMTWo6uP5OK7FnW4H4E5v97Lf8TADaIv8p5cG5zYL7g/exec",
+    "https://script.google.com/macros/s/AKfycbwBrSt_6C59FDvFO2kjKXw4OoZ19hlUjJtqCrj6O-L26W530JYvPpaioxq7jc3lTU4o0g/exec",
 };
 
 /**********************
