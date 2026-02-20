@@ -171,6 +171,7 @@ input:focus {
     border: none;
     background-color: transparent;
     color: #7a7a7a;
+     font-size: 12px;
 }
 
 .field__select.filled {
