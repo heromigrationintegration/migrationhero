@@ -1,268 +1,203 @@
-class CustomDropdown {
-  static instances = [];
+const dropdownData = {
+  hero: {
+    label: "Hero",
+    placeholder: "Selecione o nome do Hero",
+    multiple: false,
+    items: [
+      "Dara",
+      "Henrique",
+      "Isadora",
+      "Juliana Guimarães",
+      "Juliana Santos",
+      "Karla",
+      "Thalison",
+      "Yasmin",
+      "Time Herospark",
+    ],
+  },
 
-  constructor(container) {
+  import: {
+    label: "Importação de conteúdo",
+    placeholder: "Selecione uma ou mais plataformas",
+    multiple: true,
+    items: [
+      "Alpaclass",
+      "Astron Members",
+      "Cademi",
+      "Curseduca",
+      "Eduzz",
+      "Ensino Ágil",
+      "Escola Avançada",
+      "Hotmart",
+      "Kiwify",
+    ],
+  },
+
+  integration: {
+    label: "Integração de sistema",
+    placeholder: "Selecione um ou mais sistemas",
+    multiple: true,
+    items: [
+      "Active Campaign",
+      "Alpaclass",
+      "Appsell",
+      "Astron Members",
+      "Atende Master",
+      "Automator WP",
+      "Bling",
+      "Botconversa",
+      "Botgram",
+    ],
+  },
+};
+
+class Dropdown {
+  constructor(container, config) {
     this.container = container;
-    this.dropdown = container.querySelector(".field__dropdown");
-    this.list = container.querySelector(".field__list");
-    this.button = container.querySelector(".field__select");
-    this.items = container.querySelectorAll(".field__item");
-
-    this.init();
-    CustomDropdown.instances.push(this);
+    this.config = config;
+    this.selected = [];
+    this.build();
+    this.bindEvents();
   }
 
-  init() {
-    this.bindToggle();
-    this.bindItems();
-  }
+  build() {
+    const { label, placeholder, items, multiple } = this.config;
 
-  bindToggle() {
-    const toggleHandler = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    const labelElement = document.createElement("p");
+    labelElement.className = "dropdown__label";
+    labelElement.textContent = label;
 
-      const isOpen = this.list.classList.contains("active");
-      CustomDropdown.closeAll();
+    const toggle = document.createElement("button");
+    toggle.className = "dropdown__toggle";
+    toggle.type = "button";
 
-      if (!isOpen) this.open();
-    };
+    toggle.innerHTML = `
+      <span class="dropdown__text">${placeholder}</span>
+      <svg class="dropdown__icon" xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20">
+        <path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z"/>
+      </svg>
+    `;
 
-    this.dropdown.addEventListener("click", toggleHandler);
-    this.button.addEventListener("click", toggleHandler);
-  }
+    const menu = document.createElement("ul");
+    menu.className = "dropdown__menu";
 
-  bindItems() {
-    this.items.forEach((item) => {
-      item.addEventListener("click", (e) => {
-        e.stopPropagation();
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      li.className = "dropdown__item";
 
-        const checkbox = item.querySelector("input[type='checkbox']");
+      if (multiple) {
+        li.innerHTML = `
+          <label>
+            <input type="checkbox" value="${item}">
+            ${item}
+          </label>
+        `;
+      } else {
+        li.textContent = item;
+        li.dataset.value = item;
+      }
 
-        if (checkbox) {
-          checkbox.checked = !checkbox.checked;
-          this.updateMultiSelect();
-        } else {
-          this.selectSingle(item);
-        }
-      });
+      menu.appendChild(li);
     });
+
+    this.container.append(labelElement, toggle, menu);
+
+    this.toggle = toggle;
+    this.menu = menu;
+    this.text = toggle.querySelector(".dropdown__text");
   }
 
-  open() {
-    this.list.classList.add("active");
-    this.dropdown.classList.add("active");
+  bindEvents() {
+    this.toggle.addEventListener("click", () => this.toggleMenu());
+
+    const label = this.container.querySelector(".dropdown__label");
+    if (label) {
+      label.addEventListener("click", () => this.toggleMenu());
+    }
+
+    document.addEventListener("click", (e) => {
+      if (!this.container.contains(e.target)) {
+        this.close();
+      }
+    });
+
+    if (this.config.multiple) {
+      this.menu.addEventListener("change", () => this.updateMultiple());
+    } else {
+      this.menu.addEventListener("click", (e) => {
+        const item = e.target.closest(".dropdown__item");
+
+        if (!item) return;
+
+        this.selectSingle(item.dataset.value);
+      });
+    }
+  }
+
+  toggleMenu() {
+    const isOpen = this.container.classList.contains("dropdown--open");
+
+    document.querySelectorAll(".dropdown").forEach((drop) => {
+      drop.classList.remove("dropdown--open");
+      drop.querySelector(".dropdown__menu").style.pointerEvents = "none";
+    });
+
+    if (!isOpen) {
+      this.container.classList.add("dropdown--open");
+      requestAnimationFrame(() => {
+        this.menu.style.pointerEvents = "auto";
+      });
+    }
   }
 
   close() {
-    this.list.classList.remove("active");
-    this.dropdown.classList.remove("active");
+    this.container.classList.remove("dropdown--open");
+    this.menu.style.pointerEvents = "none";
   }
 
-  selectSingle(item) {
-    this.items.forEach((i) => i.classList.remove("selected"));
+  selectSingle(value) {
+    this.selected = [value];
 
-    item.classList.add("selected");
-    this.button.textContent = item.textContent.trim();
-    this.button.classList.add("filled");
+    this.text.textContent = value;
+    this.text.style.color = "#000";
 
     this.close();
   }
 
-  updateMultiSelect() {
-    const selected = [];
-
-    this.items.forEach((item) => {
-      const checkbox = item.querySelector("input[type='checkbox']");
-
-      if (checkbox && checkbox.checked) {
-        item.classList.add("selected");
-        selected.push(item.textContent.trim());
-      } else {
-        item.classList.remove("selected");
-      }
-    });
-
-    if (selected.length > 0) {
-      this.button.textContent = selected.join(", ");
-      this.button.classList.add("filled");
-    } else {
-      this.resetButton();
-    }
-  }
-
-  resetButton() {
-    this.button.classList.remove("filled");
-    this.button.textContent =
-      this.button.dataset.placeholder || "Selecione uma opção";
-  }
-
-  static closeAll() {
-    CustomDropdown.instances.forEach((instance) => instance.close());
-  }
-
-  static initAll() {
-    document.querySelectorAll(".field__toggle").forEach((toggle) => {
-      new CustomDropdown(toggle);
-    });
-
-    document.addEventListener("click", () => {
-      CustomDropdown.closeAll();
-    });
-  }
-}
-
-/**********************
- * CONFIG
- **********************/
-const CONFIG = {
-  sheetsEndpoint:
-    "https://script.google.com/macros/s/AKfycbzcMKYXHK-j-wtORxkMb9-GupRYRIS3knRXupvBYMRfjBa-E24VcRXeGm49a87oGd72UQ/exec",
-};
-
-/**********************
- * SERVICE → CAPTURA DADOS
- **********************/
-class MigrationFormService {
-  constructor(form) {
-    this.form = form;
-  }
-
-  getHero() {
-    return this.form
-      .querySelector(".field__container:nth-child(1) .field__select")
-      .textContent.trim();
-  }
-
-  getNomeCliente() {
-    return this.form.querySelector("[name='nomeCliente']").value.trim();
-  }
-
-  getMultiSelect(containerIndex) {
-    const container = this.form.querySelector(
-      `.field__container:nth-child(${containerIndex})`,
+  updateMultiple() {
+    const checked = [...this.menu.querySelectorAll("input:checked")].map(
+      (input) => input.value,
     );
 
-    const checked = [
-      ...container.querySelectorAll("input[type='checkbox']:checked"),
-    ];
+    this.selected = checked;
 
-    return checked.map((cb) => cb.parentElement.textContent.trim()).join(", ");
-  }
-
-  collect() {
-    return {
-      dataCriacao: new Date().toLocaleString("pt-BR"),
-      hero: this.getHero(),
-      nomeCliente: this.getNomeCliente(),
-      importacaoConteudo: this.getMultiSelect(3),
-      integracaoSistemas: this.getMultiSelect(4),
-    };
-  }
-}
-
-/**********************
- * SERVICE → GOOGLE SHEETS
- **********************/
-class GoogleSheetsService {
-  static async send(data) {
-    const res = await fetch(CONFIG.sheetsEndpoint, {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-      },
-      body: JSON.stringify(data),
-    });
-
-    return await res.json();
-  }
-}
-
-/**********************
- * UI CONTROL
- **********************/
-class MigrationUI {
-  constructor(form) {
-    this.form = form;
-    this.fields = form.querySelector(".field");
-    this.action = form.querySelector(".action");
-    this.info = form.querySelector(".info");
-
-    this.linkEl = form.querySelector(".info__link");
-    this.copyBtn = form.querySelector(".info__copy");
-  }
-
-  showSuccess(url) {
-    this.fields.style.display = "none";
-    this.action.style.display = "none";
-    this.info.style.display = "block";
-
-    if (url) {
-      const pageUrl = `${window.location.origin}/migrationhero/?step=product&sheet=${encodeURIComponent(url)}`;
-
-      this.linkEl.childNodes[0].nodeValue = pageUrl;
-
-      this.copyBtn.addEventListener("click", () => {
-        navigator.clipboard.writeText(pageUrl);
-        alert("Link copiado!");
-      });
+    if (checked.length) {
+      this.text.textContent = checked.join(", ");
+      this.text.style.color = "#000";
+    } else {
+      this.text.textContent = this.config.placeholder;
+      this.text.style.color = "#838383";
     }
   }
 }
 
-/**********************
- * CONTROLLER
- **********************/
-class MigrationController {
-  constructor() {
-    this.form = document.querySelector(".container__migration");
-    this.button = this.form.querySelector(".action__btn--next");
-
-    this.service = new MigrationFormService(this.form);
-    this.ui = new MigrationUI(this.form);
-
-    this.bind();
+class DropdownManager {
+  constructor(data) {
+    this.data = data;
+    this.init();
   }
 
-  bind() {
-    this.button.addEventListener("click", (e) => {
-      e.preventDefault();
-      this.createChecklist();
+  init() {
+    document.querySelectorAll("[data-dropdown]").forEach((container) => {
+      const key = container.dataset.dropdown;
+
+      if (!this.data[key]) return;
+
+      new Dropdown(container, this.data[key]);
     });
   }
-
-  async createChecklist() {
-    try {
-      const data = this.service.collect();
-
-      const response = await GoogleSheetsService.send(data);
-
-      this.ui.showSuccess(response.url);
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao enviar");
-    }
-  }
 }
 
-class StepRouter {
-  static init() {
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.get("step") === "product") {
-      document.querySelector(".container__migration").style.display = "none";
-      document.querySelector(".container__product").style.display = "flex";
-    }
-  }
-}
-
-/**********************
- * INIT
- **********************/
 document.addEventListener("DOMContentLoaded", () => {
-  CustomDropdown.initAll();
-  new MigrationController();
-  StepRouter.init();
+  new DropdownManager(dropdownData);
 });
-
