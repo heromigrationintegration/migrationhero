@@ -168,7 +168,7 @@ class Dropdown {
 
   updateMultiple() {
     const checked = [...this.menu.querySelectorAll("input:checked")].map(
-      (input) => input.value
+      (input) => input.value,
     );
 
     this.selected = checked;
@@ -180,6 +180,26 @@ class Dropdown {
       this.text.textContent = this.config.placeholder;
       this.text.style.color = "#838383";
     }
+  }
+}
+
+class Toast {
+  static show(message) {
+    let toast = document.querySelector(".toast");
+
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "toast";
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+
+    toast.classList.add("toast--show");
+
+    setTimeout(() => {
+      toast.classList.remove("toast--show");
+    }, 3000);
   }
 }
 
@@ -238,6 +258,47 @@ class FlowGenerator {
     const url = `${baseUrl}?flow=${flow}`;
 
     alert(`Link gerado:\n\n${url}`);
+  }
+}
+
+class LinkGenerator {
+  constructor(dropdowns) {
+    this.dropdowns = dropdowns;
+    this.button = document.querySelector("#btn-generate-link");
+
+    if (this.button) {
+      this.button.addEventListener("click", () => this.generate());
+    }
+  }
+
+  calculateFlow() {
+    const importSelected = this.dropdowns.import?.selected.length > 0;
+    const integrationSelected = this.dropdowns.integration?.selected.length > 0;
+
+    if (importSelected && integrationSelected) return 3;
+    if (importSelected) return 1;
+    if (integrationSelected) return 2;
+
+    return 0;
+  }
+
+  generate() {
+    const flow = this.calculateFlow();
+
+    if (!flow) {
+      Toast.show("Selecione ao menos uma opção.");
+      return;
+    }
+
+    const clientId = Utils.generateId();
+
+    const base = window.location.origin + window.location.pathname;
+
+    const url = `${base}?flow=${flow}&client=${clientId}`;
+
+    Utils.copy(url);
+
+    Toast.show("Link copiado para área de transferência.");
   }
 }
 
@@ -310,9 +371,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isClient) {
     new ClientFlow();
   } else {
-    new FlowGenerator(dropdownManager.instances);
+    new LinkGenerator(dropdownManager.instances);
 
-    const internalStep = document.querySelector('[data-step="internal"]');
-    if (internalStep) internalStep.style.display = "flex";
+    const internal = document.querySelector('[data-step="internal"]');
+
+    if (internal) internal.style.display = "flex";
   }
 });
