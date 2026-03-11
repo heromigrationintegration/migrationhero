@@ -51,6 +51,36 @@ const dropdownData = {
   },
 };
 
+class Toast {
+  static show(message) {
+    let toast = document.querySelector(".toast");
+
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "toast";
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+
+    toast.classList.add("toast--show");
+
+    setTimeout(() => {
+      toast.classList.remove("toast--show");
+    }, 3000);
+  }
+}
+
+class Utils {
+  static generateId() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  }
+
+  static copy(text) {
+    navigator.clipboard.writeText(text);
+  }
+}
+
 class Dropdown {
   constructor(container, config) {
     this.container = container;
@@ -87,10 +117,10 @@ class Dropdown {
 
       if (multiple) {
         li.innerHTML = `
-          <label>
-            <input type="checkbox" value="${item}">
-            ${item}
-          </label>
+        <label>
+        <input type="checkbox" value="${item}">
+        ${item}
+        </label>
         `;
       } else {
         li.textContent = item;
@@ -110,16 +140,8 @@ class Dropdown {
   bindEvents() {
     this.toggle.addEventListener("click", () => this.toggleMenu());
 
-    const label = this.container.querySelector(".dropdown__label");
-
-    if (label) {
-      label.addEventListener("click", () => this.toggleMenu());
-    }
-
     document.addEventListener("click", (e) => {
-      if (!this.container.contains(e.target)) {
-        this.close();
-      }
+      if (!this.container.contains(e.target)) this.close();
     });
 
     if (this.config.multiple) {
@@ -128,7 +150,6 @@ class Dropdown {
       this.menu.addEventListener("click", (e) => {
         const item = e.target.closest(".dropdown__item");
         if (!item) return;
-
         this.selectSingle(item.dataset.value);
       });
     }
@@ -139,36 +160,25 @@ class Dropdown {
 
     document.querySelectorAll(".dropdown").forEach((drop) => {
       drop.classList.remove("dropdown--open");
-      const menu = drop.querySelector(".dropdown__menu");
-      if (menu) menu.style.pointerEvents = "none";
     });
 
-    if (!isOpen) {
-      this.container.classList.add("dropdown--open");
-
-      requestAnimationFrame(() => {
-        this.menu.style.pointerEvents = "auto";
-      });
-    }
+    if (!isOpen) this.container.classList.add("dropdown--open");
   }
 
   close() {
     this.container.classList.remove("dropdown--open");
-    this.menu.style.pointerEvents = "none";
   }
 
   selectSingle(value) {
     this.selected = [value];
-
     this.text.textContent = value;
     this.text.style.color = "#000";
-
     this.close();
   }
 
   updateMultiple() {
     const checked = [...this.menu.querySelectorAll("input:checked")].map(
-      (input) => input.value,
+      (i) => i.value
     );
 
     this.selected = checked;
@@ -204,7 +214,7 @@ class DropdownManager {
   }
 }
 
-class FlowGenerator {
+class LinkGenerator {
   constructor(dropdowns) {
     this.dropdowns = dropdowns;
     this.button = document.querySelector("#btn-generate-link");
@@ -229,26 +239,31 @@ class FlowGenerator {
     const flow = this.calculateFlow();
 
     if (!flow) {
-      alert("Selecione ao menos uma opção.");
+      Toast.show("Selecione ao menos uma opção.");
       return;
     }
 
-    const baseUrl = window.location.origin + window.location.pathname;
+    const clientId = Utils.generateId();
 
-    const url = `${baseUrl}?flow=${flow}`;
+    const base = window.location.origin + window.location.pathname;
 
-    alert(`Link gerado:\n\n${url}`);
+    const url = `${base}?flow=${flow}&client=${clientId}`;
+
+    Utils.copy(url);
+
+    Toast.show("Link copiado para área de transferência.");
   }
 }
 
 class ClientFlow {
   constructor() {
     this.params = new URLSearchParams(window.location.search);
+
     this.flow = Number(this.params.get("flow"));
 
-    this.internal = document.querySelector('[data-step="internal"]');
     this.product = document.querySelector('[data-step="product-offer"]');
     this.active = document.querySelector('[data-step="active-campaign"]');
+    this.internal = document.querySelector('[data-step="internal"]');
 
     this.productBtn = document.querySelector(".button--product");
     this.activeBtn = document.querySelector(".button--active");
@@ -289,14 +304,14 @@ class ClientFlow {
           this.product.style.display = "none";
           this.active.style.display = "flex";
         } else {
-          alert("Dados enviados com sucesso!");
+          Toast.show("Dados enviados com sucesso.");
         }
       });
     }
 
     if (this.activeBtn) {
       this.activeBtn.addEventListener("click", () => {
-        alert("Dados enviados com sucesso!");
+        Toast.show("Dados enviados com sucesso.");
       });
     }
   }
@@ -310,9 +325,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isClient) {
     new ClientFlow();
   } else {
-    new FlowGenerator(dropdownManager.instances);
+    new LinkGenerator(dropdownManager.instances);
 
-    const internalStep = document.querySelector('[data-step="internal"]');
-    if (internalStep) internalStep.style.display = "flex";
+    const internal = document.querySelector('[data-step="internal"]');
+
+    if (internal) internal.style.display = "flex";
   }
 });
