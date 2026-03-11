@@ -111,6 +111,7 @@ class Dropdown {
     this.toggle.addEventListener("click", () => this.toggleMenu());
 
     const label = this.container.querySelector(".dropdown__label");
+
     if (label) {
       label.addEventListener("click", () => this.toggleMenu());
     }
@@ -126,7 +127,6 @@ class Dropdown {
     } else {
       this.menu.addEventListener("click", (e) => {
         const item = e.target.closest(".dropdown__item");
-
         if (!item) return;
 
         this.selectSingle(item.dataset.value);
@@ -139,11 +139,13 @@ class Dropdown {
 
     document.querySelectorAll(".dropdown").forEach((drop) => {
       drop.classList.remove("dropdown--open");
-      drop.querySelector(".dropdown__menu").style.pointerEvents = "none";
+      const menu = drop.querySelector(".dropdown__menu");
+      if (menu) menu.style.pointerEvents = "none";
     });
 
     if (!isOpen) {
       this.container.classList.add("dropdown--open");
+
       requestAnimationFrame(() => {
         this.menu.style.pointerEvents = "auto";
       });
@@ -184,6 +186,7 @@ class Dropdown {
 class DropdownManager {
   constructor(data) {
     this.data = data;
+    this.instances = {};
     this.init();
   }
 
@@ -193,11 +196,123 @@ class DropdownManager {
 
       if (!this.data[key]) return;
 
-      new Dropdown(container, this.data[key]);
+      const instance = new Dropdown(container, this.data[key]);
+
+      container._instance = instance;
+      this.instances[key] = instance;
     });
   }
 }
 
+class FlowGenerator {
+  constructor(dropdowns) {
+    this.dropdowns = dropdowns;
+    this.button = document.querySelector("#btn-generate-link");
+
+    if (this.button) {
+      this.button.addEventListener("click", () => this.generate());
+    }
+  }
+
+  calculateFlow() {
+    const importSelected = this.dropdowns.import?.selected.length > 0;
+    const integrationSelected = this.dropdowns.integration?.selected.length > 0;
+
+    if (importSelected && integrationSelected) return 3;
+    if (importSelected) return 1;
+    if (integrationSelected) return 2;
+
+    return 0;
+  }
+
+  generate() {
+    const flow = this.calculateFlow();
+
+    if (!flow) {
+      alert("Selecione ao menos uma opção.");
+      return;
+    }
+
+    const baseUrl = window.location.origin + window.location.pathname;
+
+    const url = `${baseUrl}?flow=${flow}`;
+
+    alert(`Link gerado:\n\n${url}`);
+  }
+}
+
+class ClientFlow {
+  constructor() {
+    this.params = new URLSearchParams(window.location.search);
+    this.flow = Number(this.params.get("flow"));
+
+    this.internal = document.querySelector('[data-step="internal"]');
+    this.product = document.querySelector('[data-step="product-offer"]');
+    this.active = document.querySelector('[data-step="active-campaign"]');
+
+    this.productBtn = document.querySelector(".button--product");
+    this.activeBtn = document.querySelector(".button--active");
+
+    this.init();
+  }
+
+  hideAll() {
+    [this.internal, this.product, this.active].forEach((el) => {
+      if (el) el.style.display = "none";
+    });
+  }
+
+  init() {
+    if (!this.flow) return;
+
+    this.hideAll();
+
+    if (this.flow === 1) {
+      this.product.style.display = "flex";
+    }
+
+    if (this.flow === 2) {
+      this.active.style.display = "flex";
+    }
+
+    if (this.flow === 3) {
+      this.product.style.display = "flex";
+    }
+
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    if (this.productBtn) {
+      this.productBtn.addEventListener("click", () => {
+        if (this.flow === 3) {
+          this.product.style.display = "none";
+          this.active.style.display = "flex";
+        } else {
+          alert("Dados enviados com sucesso!");
+        }
+      });
+    }
+
+    if (this.activeBtn) {
+      this.activeBtn.addEventListener("click", () => {
+        alert("Dados enviados com sucesso!");
+      });
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  new DropdownManager(dropdownData);
+  const dropdownManager = new DropdownManager(dropdownData);
+
+  const isClient = window.location.search.includes("flow=");
+
+  if (isClient) {
+    new ClientFlow();
+  } else {
+    new FlowGenerator(dropdownManager.instances);
+
+    const internalStep = document.querySelector('[data-step="internal"]');
+    if (internalStep) internalStep.style.display = "flex";
+  }
 });
