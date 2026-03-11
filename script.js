@@ -363,6 +363,16 @@ class ClientFlow {
   }
 }
 
+class Utils {
+  static generateId() {
+    return Math.random().toString(36).substring(2, 10);
+  }
+
+  static copy(text) {
+    navigator.clipboard.writeText(text);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const dropdownManager = new DropdownManager(dropdownData);
 
