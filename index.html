@@ -13,7 +13,7 @@
         <div class="container-banner"></div>
         <div class="container-form">
             <form class="form form--internal">
-                <fieldset class="form__step" data-step="internal" style="display:none;">
+                <fieldset class="form__step" data-step="internal">
                     <header class="form__header">
                         <h1 class="form__title">Gerador Link Migração</h1>
                         <p class="form__description">Preencha os dados abaixo para gerar o link de migração.</p>
@@ -71,11 +71,12 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="form__step" data-step="active-campaign">
+                <fieldset class="form__step" data-step="active-campaign" style="display:none;">
                     <header class="form__header">
                         <h1 class="form__title">Integração Active Campaign</h1>
-                        <p class="form__description">Essa integração cria um contato na Active Campaign. <a class="form__link" href="">Veja onde
-                            encontrar os dados para preencher os campos.</a></p>
+                        <p class="form__description">Essa integração cria um contato na Active Campaign. <a
+                                class="form__link" href="">Veja onde
+                                encontrar os dados para preencher os campos.</a></p>
                     </header>
                     <div class="form__body">
                         <div class="field">
@@ -88,7 +89,7 @@
                             <input class="field__input" type="text" name="key-client" id="key-client"
                                 placeholder="Informe a API Key da sua conta Active Campaign">
                         </div>
-                    </div>  
+                    </div>
                     <div class="form__actions">
                         <button type="button" class="button button--active">
                             Avançar
