@@ -1,6 +1,3 @@
-// =======================
-// Dados dos Dropdowns
-// =======================
 const dropdownData = {
   hero: {
     label: "Hero",
@@ -54,44 +51,6 @@ const dropdownData = {
   },
 };
 
-// =======================
-// Classe Utils
-// =======================
-class Utils {
-  static generateId() {
-    return crypto.randomUUID();
-  }
-
-  static copy(text) {
-    navigator.clipboard.writeText(text);
-  }
-}
-
-// =======================
-// Classe Toast
-// =======================
-class Toast {
-  static show(message) {
-    let toast = document.querySelector(".toast");
-
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.className = "toast";
-      document.body.appendChild(toast);
-    }
-
-    toast.textContent = message;
-    toast.classList.add("toast--show");
-
-    setTimeout(() => {
-      toast.classList.remove("toast--show");
-    }, 3000);
-  }
-}
-
-// =======================
-// Classe Dropdown
-// =======================
 class Dropdown {
   constructor(container, config) {
     this.container = container;
@@ -149,18 +108,19 @@ class Dropdown {
   }
 
   bindEvents() {
-    this.toggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      this.toggleMenu();
-    });
+    this.toggle.addEventListener("click", () => this.toggleMenu());
 
     const label = this.container.querySelector(".dropdown__label");
+
     if (label) {
-      label.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.toggleMenu();
-      });
+      label.addEventListener("click", () => this.toggleMenu());
     }
+
+    document.addEventListener("click", (e) => {
+      if (!this.container.contains(e.target)) {
+        this.close();
+      }
+    });
 
     if (this.config.multiple) {
       this.menu.addEventListener("change", () => this.updateMultiple());
@@ -168,6 +128,7 @@ class Dropdown {
       this.menu.addEventListener("click", (e) => {
         const item = e.target.closest(".dropdown__item");
         if (!item) return;
+
         this.selectSingle(item.dataset.value);
       });
     }
@@ -184,6 +145,7 @@ class Dropdown {
 
     if (!isOpen) {
       this.container.classList.add("dropdown--open");
+
       requestAnimationFrame(() => {
         this.menu.style.pointerEvents = "auto";
       });
@@ -197,24 +159,50 @@ class Dropdown {
 
   selectSingle(value) {
     this.selected = [value];
+
     this.text.textContent = value;
     this.text.style.color = "#000";
+
     this.close();
   }
 
   updateMultiple() {
-    const checked = Array.from(this.menu.querySelectorAll("input:checked"))
-      .map(input => input.value);
+    const checked = [...this.menu.querySelectorAll("input:checked")].map(
+      (input) => input.value,
+    );
 
     this.selected = checked;
-    this.text.textContent = checked.length ? checked.join(", ") : this.config.placeholder;
-    this.text.style.color = checked.length ? "#000" : "#838383";
+
+    if (checked.length) {
+      this.text.textContent = checked.join(", ");
+      this.text.style.color = "#000";
+    } else {
+      this.text.textContent = this.config.placeholder;
+      this.text.style.color = "#838383";
+    }
   }
 }
 
-// =======================
-// Classe DropdownManager
-// =======================
+class Toast {
+  static show(message) {
+    let toast = document.querySelector(".toast");
+
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.className = "toast";
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+
+    toast.classList.add("toast--show");
+
+    setTimeout(() => {
+      toast.classList.remove("toast--show");
+    }, 3000);
+  }
+}
+
 class DropdownManager {
   constructor(data) {
     this.data = data;
@@ -225,31 +213,54 @@ class DropdownManager {
   init() {
     document.querySelectorAll("[data-dropdown]").forEach((container) => {
       const key = container.dataset.dropdown;
+
       if (!this.data[key]) return;
 
       const instance = new Dropdown(container, this.data[key]);
+
       container._instance = instance;
       this.instances[key] = instance;
     });
   }
 }
 
-// =======================
-// Fechamento global de dropdowns
-// =======================
-document.addEventListener("click", (e) => {
-  document.querySelectorAll(".dropdown").forEach((drop) => {
-    if (!drop.contains(e.target)) {
-      drop.classList.remove("dropdown--open");
-      const menu = drop.querySelector(".dropdown__menu");
-      if (menu) menu.style.pointerEvents = "none";
-    }
-  });
-});
+class FlowGenerator {
+  constructor(dropdowns) {
+    this.dropdowns = dropdowns;
+    this.button = document.querySelector("#btn-generate-link");
 
-// =======================
-// Classe LinkGenerator
-// =======================
+    if (this.button) {
+      this.button.addEventListener("click", () => this.generate());
+    }
+  }
+
+  calculateFlow() {
+    const importSelected = this.dropdowns.import?.selected.length > 0;
+    const integrationSelected = this.dropdowns.integration?.selected.length > 0;
+
+    if (importSelected && integrationSelected) return 3;
+    if (importSelected) return 1;
+    if (integrationSelected) return 2;
+
+    return 0;
+  }
+
+  generate() {
+    const flow = this.calculateFlow();
+
+    if (!flow) {
+      alert("Selecione ao menos uma opção.");
+      return;
+    }
+
+    const baseUrl = window.location.origin + window.location.pathname;
+
+    const url = `${baseUrl}?flow=${flow}`;
+
+    alert(`Link gerado:\n\n${url}`);
+  }
+}
+
 class LinkGenerator {
   constructor(dropdowns) {
     this.dropdowns = dropdowns;
@@ -280,40 +291,25 @@ class LinkGenerator {
     }
 
     const clientId = Utils.generateId();
-    const url = `${window.location.origin + window.location.pathname}?flow=${flow}&client=${clientId}`;
+
+    const base = window.location.origin + window.location.pathname;
+
+    const url = `${base}?flow=${flow}&client=${clientId}`;
 
     Utils.copy(url);
+
     Toast.show("Link copiado para área de transferência.");
   }
 }
 
-// =======================
-// Configurações de flow para fieldsets e transições
-// =======================
-const flowToStepMap = {
-  1: "product-offer",
-  2: "active-campaign",
-  3: "product-offer",
-  4: "botconversa",
-  5: "astron-members",
-  6: "memberkit",
-};
-
-const flowTransitions = {
-  3: {
-    from: "product-offer",
-    to: "active-campaign",
-  },
-  // Outras transições podem ser adicionadas aqui
-};
-
-// =======================
-// Classe ClientFlow
-// =======================
 class ClientFlow {
   constructor() {
     this.params = new URLSearchParams(window.location.search);
     this.flow = Number(this.params.get("flow"));
+
+    this.internal = document.querySelector('[data-step="internal"]');
+    this.product = document.querySelector('[data-step="product-offer"]');
+    this.active = document.querySelector('[data-step="active-campaign"]');
 
     this.productBtn = document.querySelector(".button--product");
     this.activeBtn = document.querySelector(".button--active");
@@ -322,8 +318,8 @@ class ClientFlow {
   }
 
   hideAll() {
-    document.querySelectorAll("fieldset.form__step").forEach((el) => {
-      el.style.display = "none";
+    [this.internal, this.product, this.active].forEach((el) => {
+      if (el) el.style.display = "none";
     });
   }
 
@@ -332,12 +328,16 @@ class ClientFlow {
 
     this.hideAll();
 
-    const stepToShow = flowToStepMap[this.flow];
-    if (stepToShow) {
-      const fieldset = document.querySelector(`[data-step="${stepToShow}"]`);
-      if (fieldset) fieldset.style.display = "flex";
-    } else {
-      this.hideAll();
+    if (this.flow === 1) {
+      this.product.style.display = "flex";
+    }
+
+    if (this.flow === 2) {
+      this.active.style.display = "flex";
+    }
+
+    if (this.flow === 3) {
+      this.product.style.display = "flex";
     }
 
     this.bindEvents();
@@ -346,14 +346,9 @@ class ClientFlow {
   bindEvents() {
     if (this.productBtn) {
       this.productBtn.addEventListener("click", () => {
-        const transition = flowTransitions[this.flow];
-        if (transition) {
-          const fromFs = document.querySelector(`[data-step="${transition.from}"]`);
-          const toFs = document.querySelector(`[data-step="${transition.to}"]`);
-          if (fromFs && toFs) {
-            fromFs.style.display = "none";
-            toFs.style.display = "flex";
-          }
+        if (this.flow === 3) {
+          this.product.style.display = "none";
+          this.active.style.display = "flex";
         } else {
           alert("Dados enviados com sucesso!");
         }
@@ -368,9 +363,16 @@ class ClientFlow {
   }
 }
 
-// =======================
-// Inicialização da aplicação
-// =======================
+class Utils {
+  static generateId() {
+    return Math.random().toString(36).substring(2, 10);
+  }
+
+  static copy(text) {
+    navigator.clipboard.writeText(text);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const dropdownManager = new DropdownManager(dropdownData);
 
@@ -382,6 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
     new LinkGenerator(dropdownManager.instances);
 
     const internal = document.querySelector('[data-step="internal"]');
+
     if (internal) internal.style.display = "flex";
   }
 });
