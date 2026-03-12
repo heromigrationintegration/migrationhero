@@ -142,7 +142,11 @@ class Dropdown {
     });
 
     if (this.config.multiple) {
-      this.menu.addEventListener("change", () => this.updateMultiple());
+      // Para dropdown múltiplo, ouvir cada checkbox individual
+      const checkboxes = this.menu.querySelectorAll("input[type='checkbox']");
+      checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => this.updateMultiple());
+      });
     } else {
       this.menu.addEventListener("click", (e) => {
         const item = e.target.closest(".dropdown__item");
@@ -178,7 +182,7 @@ class Dropdown {
 
   updateMultiple() {
     const checked = [...this.menu.querySelectorAll("input:checked")].map(
-      (input) => input.value
+      (input) => input.value,
     );
 
     this.selected = checked;
