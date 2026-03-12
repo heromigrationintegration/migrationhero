@@ -85,13 +85,76 @@
                                 placeholder="Informe a URL API da sua conta Active Campaign">
                         </div>
                         <div class="field">
-                            <label class="field__label" for="key-client">API Key</label>
-                            <input class="field__input" type="text" name="key-client" id="key-client"
+                            <label class="field__label" for="key-active">API Key</label>
+                            <input class="field__input" type="text" name="key-active" id="key-active"
                                 placeholder="Informe a API Key da sua conta Active Campaign">
                         </div>
                     </div>
                     <div class="form__actions">
                         <button type="button" class="button button--active">
+                            Avançar
+                        </button>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form__step" data-step="botconversa" style="display:none;">
+                    <header class="form__header">
+                        <h1 class="form__title">Integração Botconversa</h1>
+                        <p class="form__description">Essa integração cria um contato no Botconversa. <a
+                                class="form__link" href="">Veja onde
+                                encontrar os dados para preencher os campos.</a></p>
+                    </header>
+                    <div class="form__body">
+                        <div class="field">
+                            <label class="field__label" for="id-companhia">ID Companhia</label>
+                            <input class="field__input" type="text" name="id-companhia" id="id-companhia"
+                                placeholder="Informe o ID da Companhia da sua conta no Botconversa">
+                        </div>
+                    </div>
+                    <div class="form__actions">
+                        <button type="button" class="button button--botconversa">
+                            Avançar
+                        </button>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form__step" data-step="astron-members" style="display:none;">
+                    <header class="form__header">
+                        <h1 class="form__title">Integração Astrom Members</h1>
+                        <p class="form__description">Essa integração libera o acesso do aluno aos conteúdos de um plano. <a
+                                class="form__link" href="">Veja onde
+                                encontrar os dados para preencher os campos.</a></p>
+                    </header>
+                    <div class="form__body">
+                        <div class="field">
+                            <label class="field__label" for="url-active">Chave Api</label>
+                            <input class="field__input" type="text" name="key-astron" id="key-astron"
+                                placeholder="Informe a Chave API da sua conta Astron Members">
+                        </div>
+                    </div>
+                    <div class="form__actions">
+                        <button type="button" class="button button--astron">
+                            Avançar
+                        </button>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form__step" data-step="memberkit" style="display:none;">
+                    <header class="form__header">
+                        <h1 class="form__title">Integração Memberkit</h1>
+                        <p class="form__description">Essa integração libera o acesso do aluno a turmas ou assinatura. <a
+                                class="form__link" href="">Veja onde
+                                encontrar os dados para preencher os campos.</a></p>
+                    </header>
+                    <div class="form__body">
+                        <div class="field">
+                            <label class="field__label" for="key-memberkit">Chave Secreta</label>
+                            <input class="field__input" type="text" name="key-memberkit" id="key-memberkit"
+                                placeholder="Informe a Chave Secreta da sua conta Memberkit">
+                        </div>
+                    </div>
+                    <div class="form__actions">
+                        <button type="button" class="button button--memberkit">
                             Avançar
                         </button>
                     </div>
