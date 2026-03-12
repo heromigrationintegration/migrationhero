@@ -142,7 +142,6 @@ class Dropdown {
     });
 
     if (this.config.multiple) {
-      // Para dropdown múltiplo, ouvir cada checkbox individual
       const checkboxes = this.menu.querySelectorAll("input[type='checkbox']");
       checkboxes.forEach((checkbox) => {
         checkbox.addEventListener("change", () => this.updateMultiple());
@@ -160,17 +159,26 @@ class Dropdown {
   toggleMenu() {
     const isOpen = this.container.classList.contains("dropdown--open");
 
+    // fecha todos os outros dropdowns
     document.querySelectorAll(".dropdown").forEach((drop) => {
       drop.classList.remove("dropdown--open");
+      const menu = drop.querySelector(".dropdown__menu");
+      if (menu) menu.style.pointerEvents = "none";
     });
 
     if (!isOpen) {
       this.container.classList.add("dropdown--open");
+
+      // ativa pointer-events depois de render
+      requestAnimationFrame(() => {
+        this.menu.style.pointerEvents = "auto";
+      });
     }
   }
 
   close() {
     this.container.classList.remove("dropdown--open");
+    this.menu.style.pointerEvents = "none";
   }
 
   selectSingle(value) {
