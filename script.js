@@ -47,7 +47,32 @@ const dropdownData = {
       "Bling",
       "Botconversa",
       "Botgram",
+      "Memberkit",
     ],
+  },
+};
+
+const FlowConfig = {
+  product: {
+    step: "product-offer",
+  },
+
+  integrations: {
+    "Active Campaign": {
+      step: "active-campaign",
+    },
+
+    Botconversa: {
+      step: "botconversa",
+    },
+
+    "Astron Members": {
+      step: "astron-members",
+    },
+
+    Memberkit: {
+      step: "memberkit",
+    },
   },
 };
 
@@ -110,12 +135,6 @@ class Dropdown {
   bindEvents() {
     this.toggle.addEventListener("click", () => this.toggleMenu());
 
-    const label = this.container.querySelector(".dropdown__label");
-
-    if (label) {
-      label.addEventListener("click", () => this.toggleMenu());
-    }
-
     document.addEventListener("click", (e) => {
       if (!this.container.contains(e.target)) {
         this.close();
@@ -139,36 +158,27 @@ class Dropdown {
 
     document.querySelectorAll(".dropdown").forEach((drop) => {
       drop.classList.remove("dropdown--open");
-      const menu = drop.querySelector(".dropdown__menu");
-      if (menu) menu.style.pointerEvents = "none";
     });
 
     if (!isOpen) {
       this.container.classList.add("dropdown--open");
-
-      requestAnimationFrame(() => {
-        this.menu.style.pointerEvents = "auto";
-      });
     }
   }
 
   close() {
     this.container.classList.remove("dropdown--open");
-    this.menu.style.pointerEvents = "none";
   }
 
   selectSingle(value) {
     this.selected = [value];
-
     this.text.textContent = value;
     this.text.style.color = "#000";
-
     this.close();
   }
 
   updateMultiple() {
     const checked = [...this.menu.querySelectorAll("input:checked")].map(
-      (input) => input.value,
+      (input) => input.value
     );
 
     this.selected = checked;
@@ -180,26 +190,6 @@ class Dropdown {
       this.text.textContent = this.config.placeholder;
       this.text.style.color = "#838383";
     }
-  }
-}
-
-class Toast {
-  static show(message) {
-    let toast = document.querySelector(".toast");
-
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.className = "toast";
-      document.body.appendChild(toast);
-    }
-
-    toast.textContent = message;
-
-    toast.classList.add("toast--show");
-
-    setTimeout(() => {
-      toast.classList.remove("toast--show");
-    }, 3000);
   }
 }
 
@@ -224,43 +214,6 @@ class DropdownManager {
   }
 }
 
-class FlowGenerator {
-  constructor(dropdowns) {
-    this.dropdowns = dropdowns;
-    this.button = document.querySelector("#btn-generate-link");
-
-    if (this.button) {
-      this.button.addEventListener("click", () => this.generate());
-    }
-  }
-
-  calculateFlow() {
-    const importSelected = this.dropdowns.import?.selected.length > 0;
-    const integrationSelected = this.dropdowns.integration?.selected.length > 0;
-
-    if (importSelected && integrationSelected) return 3;
-    if (importSelected) return 1;
-    if (integrationSelected) return 2;
-
-    return 0;
-  }
-
-  generate() {
-    const flow = this.calculateFlow();
-
-    if (!flow) {
-      alert("Selecione ao menos uma opção.");
-      return;
-    }
-
-    const baseUrl = window.location.origin + window.location.pathname;
-
-    const url = `${baseUrl}?flow=${flow}`;
-
-    alert(`Link gerado:\n\n${url}`);
-  }
-}
-
 class LinkGenerator {
   constructor(dropdowns) {
     this.dropdowns = dropdowns;
@@ -271,22 +224,26 @@ class LinkGenerator {
     }
   }
 
-  calculateFlow() {
-    const importSelected = this.dropdowns.import?.selected.length > 0;
-    const integrationSelected = this.dropdowns.integration?.selected.length > 0;
-
-    if (importSelected && integrationSelected) return 3;
-    if (importSelected) return 1;
-    if (integrationSelected) return 2;
-
-    return 0;
-  }
-
   generate() {
-    const flow = this.calculateFlow();
+    const steps = [];
 
-    if (!flow) {
-      Toast.show("Selecione ao menos uma opção.");
+    const importSelected = this.dropdowns.import?.selected || [];
+    const integrationSelected = this.dropdowns.integration?.selected || [];
+
+    if (importSelected.length) {
+      steps.push(FlowConfig.product.step);
+    }
+
+    integrationSelected.forEach((integration) => {
+      const config = FlowConfig.integrations[integration];
+
+      if (config) {
+        steps.push(config.step);
+      }
+    });
+
+    if (!steps.length) {
+      alert("Selecione ao menos uma opção.");
       return;
     }
 
@@ -294,72 +251,67 @@ class LinkGenerator {
 
     const base = window.location.origin + window.location.pathname;
 
-    const url = `${base}?flow=${flow}&client=${clientId}`;
+    const url = `${base}?steps=${steps.join(",")}&client=${clientId}`;
 
     Utils.copy(url);
 
-    Toast.show("Link copiado para área de transferência.");
+    alert("Link copiado para área de transferência.");
   }
 }
 
 class ClientFlow {
   constructor() {
     this.params = new URLSearchParams(window.location.search);
-    this.flow = Number(this.params.get("flow"));
 
-    this.internal = document.querySelector('[data-step="internal"]');
-    this.product = document.querySelector('[data-step="product-offer"]');
-    this.active = document.querySelector('[data-step="active-campaign"]');
+    this.steps = (this.params.get("steps") || "").split(",");
 
-    this.productBtn = document.querySelector(".button--product");
-    this.activeBtn = document.querySelector(".button--active");
+    this.current = 0;
+
+    this.stepElements = {};
+
+    document.querySelectorAll("[data-step]").forEach((el) => {
+      this.stepElements[el.dataset.step] = el;
+      el.style.display = "none";
+    });
 
     this.init();
   }
 
-  hideAll() {
-    [this.internal, this.product, this.active].forEach((el) => {
-      if (el) el.style.display = "none";
-    });
-  }
-
   init() {
-    if (!this.flow) return;
+    if (!this.steps.length) return;
 
-    this.hideAll();
+    this.showStep(this.steps[this.current]);
 
-    if (this.flow === 1) {
-      this.product.style.display = "flex";
-    }
-
-    if (this.flow === 2) {
-      this.active.style.display = "flex";
-    }
-
-    if (this.flow === 3) {
-      this.product.style.display = "flex";
-    }
-
-    this.bindEvents();
+    this.bindButtons();
   }
 
-  bindEvents() {
-    if (this.productBtn) {
-      this.productBtn.addEventListener("click", () => {
-        if (this.flow === 3) {
-          this.product.style.display = "none";
-          this.active.style.display = "flex";
-        } else {
-          alert("Dados enviados com sucesso!");
-        }
-      });
+  showStep(stepName) {
+    Object.values(this.stepElements).forEach((el) => {
+      el.style.display = "none";
+    });
+
+    const step = this.stepElements[stepName];
+
+    if (step) {
+      step.style.display = "flex";
+    }
+  }
+
+  next() {
+    this.current++;
+
+    if (this.current >= this.steps.length) {
+      alert("Dados enviados com sucesso!");
+      return;
     }
 
-    if (this.activeBtn) {
-      this.activeBtn.addEventListener("click", () => {
-        alert("Dados enviados com sucesso!");
-      });
-    }
+    this.showStep(this.steps[this.current]);
+  }
+
+  bindButtons() {
+    document.querySelectorAll(".form__actions button").forEach((btn) => {
+      btn.addEventListener("click", () => this.next());
+    });
   }
 }
 
@@ -376,7 +328,7 @@ class Utils {
 document.addEventListener("DOMContentLoaded", () => {
   const dropdownManager = new DropdownManager(dropdownData);
 
-  const isClient = window.location.search.includes("flow=");
+  const isClient = window.location.search.includes("steps=");
 
   if (isClient) {
     new ClientFlow();
@@ -385,6 +337,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const internal = document.querySelector('[data-step="internal"]');
 
-    if (internal) internal.style.display = "flex";
+    if (internal) {
+      internal.style.display = "flex";
+    }
   }
 });
