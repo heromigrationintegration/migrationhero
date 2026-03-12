@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
+
 *,
 *::after,
 *::before {
@@ -225,25 +226,3 @@ main {
 .button:hover {
     background-color: #4d1aa1;
 }
-
-.toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: #262626;
-    color: white;
-    padding: 0.9rem 1.2rem;
-    border-radius: 0.25rem;
-    font-size: 0.85rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all .3s ease;
-    z-index: 999;
-}
-
-.toast--show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
