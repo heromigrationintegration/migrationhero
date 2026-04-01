@@ -1,168 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Migração HeroSpark</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Criar Formulário</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-    <main>
-        <div class="container-banner"></div>
-        <div class="container-form">
-            <form class="form form--internal">
-                <fieldset class="form__step" data-step="internal">
-                    <header class="form__header">
-                        <h1 class="form__title">Gerador Link Migração</h1>
-                        <p class="form__description">Preencha os dados abaixo para gerar o link de migração.</p>
-                    </header>
-                    <div class="form__body">
-                        <div class="dropdown dropdown--hero" data-dropdown="hero"></div>
-                        <div class="field">
-                            <label class="field__label" for="name-client">Nome do cliente</label>
-                            <input class="field__input" type="text" name="name-client" id="name-client"
-                                placeholder="Nome do cliente que será migrado">
-                        </div>
-                        <div class="field">
-                            <label class="field__label" for="heimdall-client">Heimdall</label>
-                            <input class="field__input" type="url" name="heimdall-client" id="heimdall-client"
-                                placeholder="URL do Heimdall do cliente clicando em plataforma detalhada">
-                        </div>
-                        <div class="dropdown dropdown--import" data-dropdown="import" data-multiple="true"></div>
-                        <div class="dropdown dropdown--integration" data-dropdown="integration" data-multiple="true">
-                        </div>
-                    </div>
-                    <div class="form__actions">
-                        <button type="button" class="button button--internal" id="btn-generate-link">
-                            Gerar link
-                        </button>
-                    </div>
-                </fieldset>
+<body class="form">     
+    <div class="form__container">
+        <h1 class="form__title">Criar Onboarding</h1>
 
-                <fieldset class="form__step" data-step="product-offer" style="display:none;">
-                    <header class="form__header">
-                        <h1 class="form__title">Migração Produtos e Ofertas</h1>
-                        <p class="form__description">Para migrar aulas, videos e arquivos, libere o acesso como aluno
-                            para o e-mail migrar@herospark.</p>
-                    </header>
-                    <div class="form__body">
-                        <div class="field">
-                            <label class="field__label" for="name-product">Nome do produto</label>
-                            <textarea class="field__area" name="name-product" id="name-product"
-                                placeholder="Informe o nome do produto que será migrado. (Separe por vírgula)"></textarea>
-                        </div>
-                        <div class="field">
-                            <label class="field__label" for="offer-product">Link de Ofertas</label>
-                            <textarea class="field__area" name="offer-product" id="offer-product"
-                                placeholder="Informe o link da oferta que será migrada. (Separe por vírgula)"></textarea>
-                        </div>
-                        <div class="field">
-                            <label class="field__label" for="drive-product">Link Drive</label>
-                            <textarea class="field__area" name="drive-product" id="drive-product"
-                                placeholder="Se os vídeos e arquivos que serão migrados estiverem em um drive, informe o link. (Separe por vírgula)"></textarea>
-                        </div>
-                    </div>
-                    <div class="form__actions">
-                        <button type="button" class="button button--product">
-                            Avançar
-                        </button>
-                    </div>
-                </fieldset>
+        <input class="form__input" id="clientName" placeholder="Nome do cliente">
 
-                <fieldset class="form__step" data-step="active-campaign" style="display:none;">
-                    <header class="form__header">
-                        <h1 class="form__title">Integração Active Campaign</h1>
-                        <p class="form__description">Essa integração cria um contato na Active Campaign. <a
-                                class="form__link" href="">Veja onde
-                                encontrar os dados para preencher os campos.</a></p>
-                    </header>
-                    <div class="form__body">
-                        <div class="field">
-                            <label class="field__label" for="url-active">URL API</label>
-                            <input class="field__input" type="url" name="url-active" id="url-active"
-                                placeholder="Informe a URL API da sua conta Active Campaign">
-                        </div>
-                        <div class="field">
-                            <label class="field__label" for="key-active">API Key</label>
-                            <input class="field__input" type="text" name="key-active" id="key-active"
-                                placeholder="Informe a API Key da sua conta Active Campaign">
-                        </div>
-                    </div>
-                    <div class="form__actions">
-                        <button type="button" class="button button--active">
-                            Avançar
-                        </button>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form__step" data-step="botconversa" style="display:none;">
-                    <header class="form__header">
-                        <h1 class="form__title">Integração Botconversa</h1>
-                        <p class="form__description">Essa integração cria um contato no Botconversa. <a
-                                class="form__link" href="">Veja onde
-                                encontrar os dados para preencher os campos.</a></p>
-                    </header>
-                    <div class="form__body">
-                        <div class="field">
-                            <label class="field__label" for="id-companhia">ID Companhia</label>
-                            <input class="field__input" type="text" name="id-companhia" id="id-companhia"
-                                placeholder="Informe o ID da Companhia da sua conta no Botconversa">
-                        </div>
-                    </div>
-                    <div class="form__actions">
-                        <button type="button" class="button button--botconversa">
-                            Avançar
-                        </button>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form__step" data-step="astron-members" style="display:none;">
-                    <header class="form__header">
-                        <h1 class="form__title">Integração Astrom Members</h1>
-                        <p class="form__description">Essa integração libera o acesso do aluno aos conteúdos de um plano. <a
-                                class="form__link" href="">Veja onde
-                                encontrar os dados para preencher os campos.</a></p>
-                    </header>
-                    <div class="form__body">
-                        <div class="field">
-                            <label class="field__label" for="url-active">Chave Api</label>
-                            <input class="field__input" type="text" name="key-astron" id="key-astron"
-                                placeholder="Informe a Chave API da sua conta Astron Members">
-                        </div>
-                    </div>
-                    <div class="form__actions">
-                        <button type="button" class="button button--astron">
-                            Avançar
-                        </button>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form__step" data-step="memberkit" style="display:none;">
-                    <header class="form__header">
-                        <h1 class="form__title">Integração Memberkit</h1>
-                        <p class="form__description">Essa integração libera o acesso do aluno a turmas ou assinatura. <a
-                                class="form__link" href="">Veja onde
-                                encontrar os dados para preencher os campos.</a></p>
-                    </header>
-                    <div class="form__body">
-                        <div class="field">
-                            <label class="field__label" for="key-memberkit">Chave Secreta</label>
-                            <input class="field__input" type="text" name="key-memberkit" id="key-memberkit"
-                                placeholder="Informe a Chave Secreta da sua conta Memberkit">
-                        </div>
-                    </div>
-                    <div class="form__actions">
-                        <button type="button" class="button button--memberkit">
-                            Avançar
-                        </button>
-                    </div>
-                </fieldset>
-            </form>
+        <h3>Importação de Conteúdo</h3>
+        <div class="form__group">
+            <label><input type="checkbox" value="Hotmart"> Hotmart</label>
+            <label><input type="checkbox" value="Eduzz"> Eduzz</label>
+            <label><input type="checkbox" value="Kiwify"> Kiwify</label>
         </div>
-    </main>
-    <script src="script.js"></script>
+
+        <h3>Integrações</h3>
+        <div class="form__group">
+            <label><input type="checkbox" value="ActiveCampaign"> ActiveCampaign</label>
+            <label><input type="checkbox" value="Botconversa"> Botconversa</label>
+            <label><input type="checkbox" value="AstronMembers"> Astron Members</label>
+            <label><input type="checkbox" value="Utmify"> Utmify</label>
+        </div>
+
+        <button class="form__button" onclick="createForm()">Gerar Link</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
